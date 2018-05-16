@@ -47,6 +47,10 @@ class Module(MgrModule):
         {
             'name': 'interval',
             'default': 15
+        },
+        {
+            'name': 'identifier',
+            'default': ''
         }
     ]
 
@@ -96,7 +100,8 @@ class Module(MgrModule):
                         'pool_name': pool['name'],
                         'pool_id': pool['id'],
                         'type_instance': df_type,
-                        'fsid': self.get_fsid()
+                        'fsid': self.get_fsid(),
+                        'identifier': self.config['identifier'] or self.get_fsid()
                     },
                     'value': pool['stats'][df_type],
                 }
@@ -120,7 +125,8 @@ class Module(MgrModule):
                         'ceph_daemon': daemon,
                         'type_instance': path,
                         'host': metadata['hostname'],
-                        'fsid': self.get_fsid()
+                        'fsid': self.get_fsid(),
+                        'identifier': self.config['identifier'] or self.get_fsid()
                     },
                     'value': counter_info['value']
                 })
@@ -204,7 +210,8 @@ class Module(MgrModule):
                 'measurement': 'ceph_cluster_stats',
                 'tags': {
                     'type_instance': key,
-                    'fsid': self.get_fsid()
+                    'fsid': self.get_fsid(),
+                    'identifier': self.config['identifier'] or self.get_fsid()
                 },
                 'value': int(value)
             })
@@ -234,6 +241,8 @@ class Module(MgrModule):
         self.config['interval'] = \
             int(self.get_config("interval",
                                 default=self.config_keys['interval']))
+        self.config['identifier'] = \
+            self.get_config("identifier", default=self.config_keys['identifier'])
 
     def now(self):
         return int(round(time.time() * 1000000000))
