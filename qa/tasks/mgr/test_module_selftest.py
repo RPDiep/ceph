@@ -46,6 +46,7 @@ class TestModuleSelftest(MgrTestCase):
         self._selftest_plugin("influx")
 
     def test_telegraf(self):
+        self.mgr_cluster.set_module_conf("telegraf", "identifier", "ceph.example.com")
         self._selftest_plugin("telegraf")
 
     def test_iostat(self):
@@ -146,7 +147,7 @@ class TestModuleSelftest(MgrTestCase):
         for mgr_id in self.mgr_cluster.mgr_daemons.keys():
             self.mgr_cluster.mgr_restart(mgr_id)
 
-        # Wait for a new active 
+        # Wait for a new active
         self.wait_until_true(
                 lambda: self.mgr_cluster.get_active_id() != "", timeout=30)
 
